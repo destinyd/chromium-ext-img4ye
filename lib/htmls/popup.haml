@@ -1,0 +1,44 @@
+!!!
+%html
+  %head
+    %title 4ye Collect Auth
+    %meta{:charset => "utf-8"}
+    %link{:rel => "stylesheet", :href => "main.css"}
+  %body.collect-4ye
+    .loading{:style => 'display:none;'}
+      .icon
+      .info
+
+    .logo
+      %a{:href => 'http://done-list.local.realityandapp.com:3000', :target => '_blank'}
+        %span.a 4ye
+        %span.b Collector
+
+    .user-info{:style => 'display:none;'}
+      .avatar
+      .name
+
+    .auth{:style => 'display:none;'}
+      %a.signin{:href => 'http://done-list.local.realityandapp.com:3000', :target => '_blank'}
+        %span 点这里登录，然后才能收集网址
+
+
+    .upload_info{:style => 'display:none;'}
+      .text 请选择截图的方式:
+
+      .actions
+        %button.fullpage 全页
+        %button.viewport 可视区域
+        %button.selection 选区
+
+      .img
+        -#%a.btn.btn-circle.btn-solid-caution.upload{id: 'upload_btn', href: 'javascript:;', data: {domain: 'http://7xj2hr.com1.z0.glb.clouddn.com', basepath: 'i'}} 确定上传
+      .files
+
+    %script{:src => "deps.js"}
+    %script{:src => "popup.js"}
+    %script{:src => "randstr.js"}
+    %script{:src => "plupload.full.min.js"}
+    %script{:src => "qiniu.min.js"}
+    %script{:src => "capturer.js"}
+    -#%script{:src => "uploader.js"}
