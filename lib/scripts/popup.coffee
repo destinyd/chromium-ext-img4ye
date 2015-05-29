@@ -2,7 +2,7 @@ jQuery ->
   console.log 'loaded'
 # HOST = "http://collect.4ye.me"
 HOST = "http://done-list.local.realityandapp.com:3000"
-ANIMATE_DURATION = 200
+ANIMATE_DURATION = 100
 
 delay = (ms, func) -> setTimeout func, msg
 
@@ -68,10 +68,21 @@ class Popup
     jQuery('.actions .viewport').click ->
       chrome.tabs.captureVisibleTab null, format: "png", (data_url) ->
         console.log data_url
+        window.upload_url = data_url
         $('.img').css 'background-image', "url(#{data_url})"
+        $('button.upload').attr 'disabled', false
 
     jQuery('.actions .selection').click ->
       console.log 'selection'
+
+    jQuery('button.upload').click ->
+      # 初始化
+      # 上传 base64 文件
+      #window.up.add_file_by_base64(base64_str)
+      window.up.add_file_by_base64(window.upload_url)
+
+      # 开始上传
+      #window.up.qiniu.start()
     console.log 'bind_buttons end'
 
   show_info: ->
@@ -217,13 +228,51 @@ class Popup
       #@tabId = tab.id
       #console.log @fetchPageSize
       #@fetchPageSize(tab.id)
+class ExtFileProgress
+  constructor: (@$files_ele, @file)->
+    @obj_button = jQuery('button.upload')
 
+  refresh_progress: ->
+    console.log("refresh_progress #{@file.percent}%", )
+    @$files_ele.text("#{@file.percent}%")
+
+  upload_success: (info)->
+    console.log("uploaded")
+    window.info = info
+    @$files_ele.html("上传成功<br /><a href='#{info.url}' target='_blank'>#{info.url}</a>")
+
+  upload_end: ->
+    @obj_button.text('上传')
+    @obj_button.attr('disabled', false)
+    console.log("upload_end")
+
+  upload_error: ->
+    console.log("upload_error")
+    @$files_ele.text("上传失败")
+
+  start_upload: ->
+    @obj_button.text('上传中...')
+    @obj_button.attr('disabled', true)
+    console.log("start_upload")
 
 jQuery ->
+  options = {
+    qiniu_domain:    "http://7xie1v.com1.z0.glb.clouddn.com/", 
+    qiniu_basepath:  "i",
+    browse_button: jQuery('.hidden'),
+    uptoken_url:     'http://119.248.23.222:3000/file_entities/uptoken',
+    auto_start: true,
+    paste_upload: false,
+    file_list_area: jQuery('.files'),
+    file_progress_callback: ExtFileProgress
+  }
+  window.up = new Img4yeUploader(options)
+
   popup = new Popup
-  
+
 chrome.runtime.onMessage.addListener (request, sender) ->
   # receive 'fullpage' message from 'capturer.js'
   console.log msg
   if request.msg == 'fullpage'
     $('.img').css 'background-image', "url(#{msg.url})"
+

@@ -18,7 +18,7 @@ app =
   manifest: "manifest.json"
   images: "lib/images/*.*"
   font_futura: "lib/font-futura/*.*"
-  verdor: "lib/vendor/*.*"
+  vendor: "lib/vendor/*.*"
   dist:
     dir: "dist"
     css: "main.css"
@@ -51,7 +51,7 @@ gulp.task "scripts", ->
     .pipe(coffee())
     .pipe(smaps.write())
     .pipe(gulp.dest(app.dist.dir))
-  gulp.src(app.verdor)
+  gulp.src(app.vendor)
     .pipe(gulp.dest(app.dist.dir))
 
 
@@ -90,6 +90,10 @@ gulp.task "font_futura", ->
   gulp.src(app.font_futura)
     .pipe(gulp.dest(app.dist.font_futura_dir))
 
+gulp.task "vendor", ->
+  gulp.src(app.vendor)
+    .pipe(gulp.dest(app.dist.dir))
+
 gulp.task "build", [
   "bower",
   "styles",
@@ -106,6 +110,7 @@ gulp.task "watch", ["build"], ->
   gulp.watch(app.html, ["htmls"])
   gulp.watch(app.images, ["images"])
   gulp.watch(app.manifest, ["manifest"])
+  gulp.watch(app.vendor, ["vendor"])
   gulp.watch("./bower.json", ["bower"])
 
 

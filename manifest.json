@@ -5,7 +5,18 @@
   "description": "Tiny screenshot tool.",
   "version": "0.0.1",
 
-  "permissions": [ "contextMenus", "notifications", "storage", "tabs", "http://*/*", "https://*/*", "activeTab", "\u003Call_urls>" ],
+  "permissions": [
+    "contextMenus",
+    "notifications",
+    "storage",
+    "tabs",
+    "http://*/*",
+    "https://*/*",
+    "activeTab",
+    "<all_urls>",
+    "http://119.248.23.222:3000/",
+    "http://up.qiniu.com/"
+  ],
   "content_scripts": [
     {
       "matches": [
