@@ -1,8 +1,6 @@
 jQuery ->
   console.log 'loaded'
 # HOST = "http://collect.4ye.me"
-HOST = "http://done-list.local.realityandapp.com:3000"
-ANIMATE_DURATION = 100
 
 delay = (ms, func) -> setTimeout func, msg
 
@@ -74,6 +72,9 @@ class Popup
 
     jQuery('.actions .selection').click ->
       console.log 'selection'
+      chrome.tabs.getSelected (tab) =>
+        chrome.tabs.sendMessage tab.id, {task: 'selection'}, @selection_callback
+        window.close()
 
     jQuery('button.upload').click ->
       # 初始化
@@ -84,6 +85,9 @@ class Popup
       # 开始上传
       #window.up.qiniu.start()
     console.log 'bind_buttons end'
+
+  selection_callback: (pageSize) ->
+    console.log 'selection_callback'
 
   show_info: ->
     console.log 'show info'
@@ -269,10 +273,3 @@ jQuery ->
   window.up = new Img4yeUploader(options)
 
   popup = new Popup
-
-chrome.runtime.onMessage.addListener (request, sender) ->
-  # receive 'fullpage' message from 'capturer.js'
-  console.log msg
-  if request.msg == 'fullpage'
-    $('.img').css 'background-image', "url(#{msg.url})"
-

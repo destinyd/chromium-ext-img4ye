@@ -26,12 +26,18 @@
       ],
 
       "js": [
-        "page.js"
+        "base.js",
+        "page.js",
+        "deps.js"
+      ],
+      "css": [
+        "page.css"
       ]
     }
   ],
   "background": {
-    "page": "background.html"
+    "scripts": ["background.js"],
+    "persistent": false
   },
 
   "browser_action": {
