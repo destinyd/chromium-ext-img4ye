@@ -27,8 +27,8 @@
 
       "js": [
         "base.js",
-        "page.js",
-        "deps.js"
+        "deps.js",
+        "page.js"
       ],
       "css": [
         "page.css"

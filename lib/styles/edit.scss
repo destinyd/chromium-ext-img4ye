@@ -1,0 +1,31 @@
+@mixin border {
+  border-top:dashed 1px #ccc;
+}
+
+body.collect-4ye {
+ .loading {
+    padding:10px;
+    overflow:hidden;
+    background-color: #f4f4f4;
+    @include border;
+    .icon {
+      width:24px;height:24px;
+      background: url(ajax-loader.gif) no-repeat;
+      float:left;
+      margin-right: 10px;
+    }
+    .info {
+      height:24px;line-height:24px;
+    }
+  }
+
+  .image{
+    background-size: 1000px auto;
+    background-repeat: no-repeat;
+    min-width: 1010px;
+    width: 100%;
+    min-height: 600px;
+    height: auto;
+    border:solid 1px #ddd;
+  }
+}

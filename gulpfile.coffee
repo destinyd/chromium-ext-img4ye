@@ -51,11 +51,7 @@ gulp.task "scripts", ->
     .pipe(coffee())
     .pipe(smaps.write())
     .pipe(gulp.dest(app.dist.dir))
-  gulp.src(app.vendor)
-    .pipe(gulp.dest(app.dist.dir))
 
-
-gulp.task "styles", ->
 
 gulp.task "styles", ->
   gulp.src(app.css)
@@ -68,7 +64,7 @@ gulp.task "styles", ->
         util.colors.red(file),
         err.message
       ].join(" ")
-    .pipe(concat(app.dist.css))
+    #.pipe(concat(app.dist.css))
     .pipe(gulp.dest(app.dist.dir))
 
 

@@ -10,6 +10,9 @@ chrome.runtime.onMessage.addListener (request, sender, respond) ->
   else if request.task == "capture"
     console.log 'task capture'
     chrome.tabs.captureVisibleTab null, {format: "png"}, respond
+  else if request.task == "get_extension_base_url"
+    console.log 'get extension base url'
+    respond({url: chrome.extension.getURL("")})
   else
     console.log 'nothing'
   true

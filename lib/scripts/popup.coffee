@@ -67,8 +67,11 @@ class Popup
       chrome.tabs.captureVisibleTab null, format: "png", (data_url) ->
         console.log data_url
         window.upload_url = data_url
-        $('.img').css 'background-image', "url(#{data_url})"
-        $('button.upload').attr 'disabled', false
+        chrome.storage.local.set {'src': data_url}, ->
+          console.log 'storage'
+          window.open(window.extension_base_url + "edit.html", "_blank")
+        #$('.img').css 'background-image', "url(#{data_url})"
+        #$('button.upload').attr 'disabled', false
 
     jQuery('.actions .selection').click ->
       console.log 'selection'
@@ -232,44 +235,7 @@ class Popup
       #@tabId = tab.id
       #console.log @fetchPageSize
       #@fetchPageSize(tab.id)
-class ExtFileProgress
-  constructor: (@$files_ele, @file)->
-    @obj_button = jQuery('button.upload')
-
-  refresh_progress: ->
-    console.log("refresh_progress #{@file.percent}%", )
-    @$files_ele.text("#{@file.percent}%")
-
-  upload_success: (info)->
-    console.log("uploaded")
-    window.info = info
-    @$files_ele.html("上传成功<br /><a href='#{info.url}' target='_blank'>#{info.url}</a>")
-
-  upload_end: ->
-    @obj_button.text('上传')
-    @obj_button.attr('disabled', false)
-    console.log("upload_end")
-
-  upload_error: ->
-    console.log("upload_error")
-    @$files_ele.text("上传失败")
-
-  start_upload: ->
-    @obj_button.text('上传中...')
-    @obj_button.attr('disabled', true)
-    console.log("start_upload")
-
 jQuery ->
-  options = {
-    qiniu_domain:    "http://7xie1v.com1.z0.glb.clouddn.com/", 
-    qiniu_basepath:  "i",
-    browse_button: jQuery('.hidden'),
-    uptoken_url:     'http://119.248.23.222:3000/file_entities/uptoken',
-    auto_start: true,
-    paste_upload: false,
-    file_list_area: jQuery('.files'),
-    file_progress_callback: ExtFileProgress
-  }
-  window.up = new Img4yeUploader(options)
-
   popup = new Popup
+
+  window.extension_base_url = chrome.extension.getURL("")

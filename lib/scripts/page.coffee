@@ -201,7 +201,10 @@ class ImageCropper
     
     console.log 'before Popup'
     console.log @canvas.toDataURL()
-    new @callback(@canvas.toDataURL()) if @callback
+    chrome.storage.local.set {'src': @canvas.toDataURL()}, ->
+      console.log 'storage'
+      window.open(window.extension_base_url + "edit.html", "_blank")
+    #new @callback(@canvas.toDataURL()) if @callback
 
 class Popup extends View
   constructor: (@src)->
@@ -270,3 +273,10 @@ chrome.extension.onMessage.addListener (message, sender, resCallback) ->
     chrome.tabs.captureVisibleTab null, {format: "png"}, respond
   else
     console.log('other')
+
+jQuery ->
+  console.log 'page loaded'
+  chrome.runtime.sendMessage {task: "get_extension_base_url"}, (res) ->
+    console.log 'respond get_extension_base_url'
+    console.log res.url
+    window.extension_base_url = res.url
