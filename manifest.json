@@ -7,14 +7,13 @@
 
   "permissions": [
     "contextMenus",
-    "notifications",
     "storage",
     "tabs",
     "http://*/*",
     "https://*/*",
     "activeTab",
     "<all_urls>",
-    "http://119.248.23.222:3000/",
+    "http://img.4ye.me/",
     "http://up.qiniu.com/"
   ],
   "content_scripts": [
