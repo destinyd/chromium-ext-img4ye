@@ -278,5 +278,6 @@ jQuery ->
   console.log 'page loaded'
   chrome.runtime.sendMessage {task: "get_extension_base_url"}, (res) ->
     console.log 'respond get_extension_base_url'
+    console.log res
     console.log res.url
     window.extension_base_url = res.url
