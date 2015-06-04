@@ -6,17 +6,12 @@ class ImageEdit
     @bind()
 
   sync_get_src: ->
-    console.log "sync_get_src"
     that = this
     chrome.storage.local.get "src", (obj) ->
-      console.log "storage local get"
-      console.log obj
       that.src = obj.src
       that.show_image()
 
   show_image: ->
-    console.log "show_image"
-    console.log "url(#{@src})"
     @$image.css 'background-image', "url(#{@src})"
 
   bind: ->
@@ -26,38 +21,26 @@ class ImageEdit
 
 class ExtFileProgress
   constructor: (@$files_ele, @file)->
-    console.log 'ExtFileProgress'
-    console.log @$files_ele
-    console.log @file
     @obj_button = jQuery('button.upload')
-    #@$files_ele = jQuery(@$files_ele)
-    #@obj_info = @$files_ele.find('.info')
 
   refresh_progress: ->
-    console.log("refresh_progress #{@file.percent}%", )
     @obj_button.text("上传中 #{@file.percent}%")
 
   upload_success: (info)->
-    console.log("uploaded")
     window.info = info
     jQuery('body.collect-4ye .success').html("上传成功<br /><a href='#{info.url}' target='_blank'>#{info.url}</a>").show()
-    #@$files_ele.html("上传成功<br /><a href='#{info.url}' target='_blank'>#{info.url}</a>")
 
   upload_end: ->
     @obj_button.text('上传')
     @obj_button.attr('disabled', false)
-    console.log("upload_end")
-    #@$files_ele.fadeOut ANIMATE_DURATION
 
   upload_error: ->
-    console.log("upload_error")
-    @obj_info.text("上传失败")
+    console.log '上传失败'
+    jQuery('body.collect-4ye .success').html("上传失败").show()
 
   start_upload: ->
-    #@$files_ele.show()
     @obj_button.text('上传中...')
     @obj_button.attr('disabled', true)
-    console.log("start_upload")
 
 jQuery ->
   options = {

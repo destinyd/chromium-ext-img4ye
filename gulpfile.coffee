@@ -97,7 +97,8 @@ gulp.task "build", [
   "scripts",
   "manifest",
   "images",
-  "font_futura"
+  "font_futura",
+  "vendor"
 ]
 
 gulp.task "watch", ["build"], ->
