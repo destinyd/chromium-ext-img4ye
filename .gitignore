@@ -14,5 +14,6 @@ config/output_settings.yml
 components/*
 node_modules/*
 dist/*
+Gemfile.lock
 
 tmp
