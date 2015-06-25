@@ -1,2 +1,2 @@
-@HOST = "http://done-list.local.realityandapp.com:3000"
+@HOST = "http://img.4ye.me"
 @ANIMATE_DURATION = 100
