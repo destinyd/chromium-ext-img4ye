@@ -10,7 +10,8 @@ class Auth
         name = res.name
         #jQuery('.user-info .avatar').css 'background-image', "url(#{avatar})"
         jQuery('.user-info .name').text name
-        jQuery('.user-info').fadeIn(ANIMATE_DURATION)
+        #jQuery('.user-info').fadeIn(ANIMATE_DURATION)
+        jQuery('.user-info').show()
 
         # 绑定按钮操作
         @popup.show_actions()
@@ -53,7 +54,8 @@ class Popup
 
   show_actions: ->
     @bind_buttons()
-    jQuery('.upload_info').fadeIn(ANIMATE_DURATION)
+    #jQuery('.upload_info').fadeIn(ANIMATE_DURATION)
+    jQuery('.upload_info').show()
 
 jQuery ->
   popup = new Popup

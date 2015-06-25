@@ -30,9 +30,9 @@
   border-top:dashed 1px #ccc;
 }
 
-$width: 480px;
+$width: 300px;
 
-body.collect-4ye {
+body.img-4ye {
   padding:0;margin:0;
   font-size:14px;
   font-family:"Segoe UI", "Helvetica Neue", "Helvetica", "Arial", "sans-serif", "微软雅黑";
@@ -251,6 +251,10 @@ body.collect-4ye {
     position:relative;
     min-height: 122px;
     
+    h3{
+      margin-top: 0;
+    }
+    
     label {font-weight:bold;}
     $w: $width - 20px - 10px - 122px;
 
@@ -266,6 +270,13 @@ body.collect-4ye {
       width:120px;
       border:solid 1px #ddd;
       top:10px;right:10px;
+    }
+    button{
+      @include btn;
+      color: white;
+      background-color: #2A70E8;
+      margin-bottom: 5px;
+      width: 100%;
     }
   }
 }
