@@ -12,10 +12,8 @@
     "http://*/*",
     "https://*/*",
     "activeTab",
-    "<all_urls>",
-    "http://img.4ye.me/",
-    "http://up.qiniu.com/"
-  ],
+    "<all_urls>"
+    ],
   "content_scripts": [
     {
       "matches": [
@@ -27,6 +25,7 @@
       "js": [
         "base.js",
         "deps.js",
+        "lodash.compat.js",
         "page.js"
       ],
       "css": [

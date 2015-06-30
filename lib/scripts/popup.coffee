@@ -34,7 +34,11 @@ class Popup
 
   bind_buttons: ->
     jQuery('.actions .fullpage').click ->
-      takeScreenshot()
+      chrome.tabs.getSelected (tab) =>
+        # 直接在其他位置处理了
+        chrome.tabs.sendMessage tab.id, {task: 'fullpage'}, @fullpage_callback
+        window.close()
+      #takeScreenshot()
 
     jQuery('.actions .viewport').click ->
       chrome.tabs.captureVisibleTab null, format: "png", (data_url) ->
@@ -47,6 +51,9 @@ class Popup
         # 直接在其他位置处理了
         chrome.tabs.sendMessage tab.id, {task: 'selection'}, @selection_callback
         window.close()
+
+  fullpage_callback: (pageSize) ->
+    console.log 'fullpage_callback'
 
   selection_callback: (pageSize) ->
     # 选取截图，不在这个回调中处理
