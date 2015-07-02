@@ -12,7 +12,8 @@ class ImageEdit
       that.show_image()
 
   show_image: ->
-    @$image.css 'background-image', "url(#{@src})"
+    #@$image.css 'background-image', "url(#{@src})"
+    @$image.attr 'src', @src
 
   bind: ->
     that = this
