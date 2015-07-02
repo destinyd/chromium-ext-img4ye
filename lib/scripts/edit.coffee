@@ -29,7 +29,8 @@ class ExtFileProgress
 
   success: (info)->
     window.info = info
-    jQuery('body.collect-4ye .success').html("上传成功<br /><a href='#{info.url}' target='_blank'>#{info.url}</a>").show()
+    url = "#{HOST}/f/#{info.id}"
+    jQuery('body.collect-4ye .success').html("上传成功<br /><a href='#{url}' target='_blank'>#{url}</a>").show()
 
   @alldone: ->
     console.log 'alldone'
