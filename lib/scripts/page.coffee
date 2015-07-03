@@ -1,74 +1,3 @@
-class View
-  constructor: ()->
-    @
-
-  load_template: (template)=>
-    @exec(@, template)
-
-  exec: (view, name)->
-    @url = chrome.extension.getURL("#{name}.html")
-    jQuery.ajax 
-      async: false,
-      type: "GET",
-      url: @url,
-      success: (html) ->
-        window.overlay = view
-        window.html = html
-        view.$el = jQuery(html)
-
-
-class Overlay extends View
-  constructor: ->
-    @nobg = "background-color": "rgba(0,0,0,0)"
-
-    @load_template("overlay")
-
-    @$tl = @$el.find(".tl")
-    @$tr = @$el.find(".tr")
-    @$br = @$el.find(".br")
-    @$bl = @$el.find(".bl")
-
-  inject: ->
-    window.el = @$el
-    @$el.css(height: jQuery(document).height(), width: jQuery(document).width())
-      .appendTo(document.body)
-      .show()
-
-  select: (selected)->
-    window.selected = selected
-    @$el.css(@nobg)
-
-    @$tl.css
-      width:  selected.left + selected.width,
-      height: selected.top
-
-    @$tr.css
-      width:  @width() - (selected.left + selected.width),
-      height: selected.top + selected.height
-
-    @$br.css
-      width:  @width() - selected.left,
-      height: @height() - (selected.top + selected.height)
-
-    @$bl.css
-      width:  selected.left,
-      height: @height() - selected.top
-
-  on: (event, callback) ->
-    @$el.on event, callback
-
-  trigger: (event) ->
-    @$el.trigger event
-
-  remove: () ->
-    @$el.remove()
-
-  width: ->
-    @$el.width()
-
-  height: ->
-    @$el.height()
-
 class Capture
   before: ->
     window.$fixedels ||= jQuery("*").filter(-> jQuery(@).css("position") == "fixed" )
@@ -81,59 +10,93 @@ class Capture
 
 
 class Selection extends Capture
-  #constructor: (@callback)~>
   constructor: (@$el) ->
-    @overlay   = new Overlay()
-    @capturing = @binded = false
-    @reset_selection()
-    @bind()
     @before()
-    @overlay.inject()
 
-  reset_selection: ->
-    @start = x: 0, y: 0
-    @selected = height: 16, width: 16, left: 0, top: 0
-
-  bind: ->
-    return if @binded
-
-    @overlay.on "mousedown", (event) =>
-      @reset_selection()
-      @capturing = true
-
-      @selected.top  = @start.y = event.pageY
-      @selected.left = @start.x = event.pageX
-
-    @overlay.on "mousemove", (event) =>
-      if @capturing
-        height = event.pageY - @start.y
-        width  = event.pageX - @start.x
+    @$overlay = jQuery('<div>')
+      .addClass('overlay')
+      .css
+          'position': 'fixed'
+          'top': 0
+          'left': 0
+          'right': 0
+          'bottom': 0
+          'background-color': 'rgba(0,0,0,0.0)'
+      .appendTo jQuery(document.body)
         
-        @selected.top    = if height > 0 then @start.y else event.pageY
-        @selected.left   = if width  > 0 then @start.x else event.pageX
-        @selected.height = Math.abs(height)
-        @selected.width  = Math.abs(width)
-        
-        @overlay.select(@selected)
-    
-    @overlay.on "mouseup", (event) =>
-      @capturing = false
-      @selected.left = @selected.left - jQuery(document).scrollLeft()
-      @selected.top  = @selected.top  - jQuery(document).scrollTop()
-      @overlay.trigger("save")  
-    
-    @overlay.on "save", ->
-      chrome.runtime.sendMessage {task: "capture"}, (response) ->
-        window.selection.overlay.remove()
-        window.selection.after()
-        window.selection.crop(response)
+    @jcrop_api = $.Jcrop @$overlay, {
+      onChange: @on_select_change,
+      onSelect: @on_select_change,
+      onDblClick: @_crop
+    }
+    jQuery('.jcrop-holder')
+        .css 
+            'position': 'fixed'
+            'top': 0
+            'left': 0
+            'right': 0
+            'bottom': 0
+            'background-color': 'rgba(0,0,0,0.4)'
 
-    @binded = true
+    @$actions = jQuery('<div><button class="button-4ye left cancel">取消</button><button class="button-4ye ok">确定</button></div>')
+      .addClass('img4ye-actions')
+      .css
+        'position': 'fixed'
+        'top': 0
+        'left': 0
+        'right': 0
+        'bottom': 0
+        'background-color': 'rgba(0,0,0,0.0)'
+        'z-index': 9999999
+        'display': 'none'
+        'width': 100
+        'height': 30
+      .appendTo jQuery(document.body)
 
-  save: (response) =>
-    @overlay.remove()
-    @after()
-    @crop(response)
+    @_bind()
+
+  _bind: ->
+    console.log '_bind'
+    console.log @$actions
+    console.log @jcrop_api
+    @$actions.on 'click', '.cancel', @release
+
+    @$actions.on 'click', '.ok', @_crop
+
+    @$actions.on 'dblclick', ''
+
+  release: () =>
+    console.log 'release'
+    @jcrop_api.release()
+    @$actions.remove()
+    @$overlay.remove()
+    jQuery('.jcrop-holder').remove()
+
+  _crop: =>
+    console.log 'crop'
+    console.log @
+    console.log @selected
+    @release()
+    that = @
+    chrome.runtime.sendMessage {task: "capture"}, (response) ->
+      that.after()
+      that.crop(response)
+
+
+  actions_location:
+    x: -100, y: 30
+
+  on_select_change: (c) =>
+    console.log c
+    @selected = height: c.h, width: c.w, left: c.x, top: c.y
+    @$actions
+      .css
+        'left': @selected.left + @selected.width + @actions_location.x
+        'top': @selected.top + @selected.height + @actions_location.y
+    if c.w > 0 and c.h > 0
+      @$actions.show()
+    else
+      @$actions.hide()
 
   crop: (data)->
     return if !data
@@ -216,7 +179,6 @@ class ImageBuffer
 
 class @FullPage
   constructor: -> #(@callback) ->
-    #@_before()
     @_init()
 
   _before: ->
@@ -258,8 +220,6 @@ class @FullPage
     @scroll = frames[0]
     _.delay(@delay, 200)
 
-
-
   delay: =>
     if @scroll
       window.scrollTo(@scroll.x, @scroll.y)
@@ -277,16 +237,6 @@ class @FullPage
         200
       )
     
-#@flatten = (a) ->
-  #if a.length is 0 then return []
-  #a.reduce (lhs, rhs) -> lhs.concat rhs
-
-#@isFunction = (f) ->
-  #if typeof f is 'function'
-    #true
-  #else
-    #false
-
 jQuery ->
   chrome.runtime.sendMessage {task: "get_extension_base_url"}, (res) ->
     window.extension_base_url = res.url

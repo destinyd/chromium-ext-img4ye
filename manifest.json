@@ -26,9 +26,11 @@
         "base.js",
         "deps.js",
         "lodash.compat.js",
+        "jcrop.img4ye.js",
         "page.js"
       ],
       "css": [
+        "jquery.jcrop.min.css",
         "page.css"
       ]
     }

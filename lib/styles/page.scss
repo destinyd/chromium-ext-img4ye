@@ -1,0 +1,35 @@
+@mixin btn {
+  font-size:14px;
+  font-weight:bold;
+  height:32px;
+  line-height:32px;
+  display:block;
+  border-radius:3px;
+  text-align:center;
+  text-decoration:none;
+  position:relative;
+  transition: all .3s ease-in;
+  text-shadow: 0 0 3px rgba(black, 0.5);
+  border:solid 1px rgba(black, 0.1);
+  &:active {
+    top:2px;
+  }
+}
+
+.img4ye-actions{
+  clear: both;
+  width: 130px;
+  height: 40px;
+
+  button{
+    @include btn;
+    color: white;
+    background-color: #2A70E8;
+  }
+  .ok{
+    float: right;
+  }
+  .cancel{
+    float: left;
+  }
+}
