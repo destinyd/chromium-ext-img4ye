@@ -74,14 +74,15 @@ class Selection extends Capture
 
   _crop: =>
     console.log 'crop'
-    console.log @
-    console.log @selected
     @release()
-    that = @
+    _.delay(@send_crop, 200)
+
+  send_crop: =>
+    console.log 'send crop'
+    that = this
     chrome.runtime.sendMessage {task: "capture"}, (response) ->
       that.after()
       that.crop(response)
-
 
   actions_location:
     x: -100, y: 30
