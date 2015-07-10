@@ -17,3 +17,4 @@ dist/*
 Gemfile.lock
 
 tmp
+*.zip

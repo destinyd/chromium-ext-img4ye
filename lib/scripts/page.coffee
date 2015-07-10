@@ -51,6 +51,7 @@ class Selection extends Capture
         'display': 'none'
         'width': 100
         'height': 30
+        'margin': 0
       .appendTo jQuery(document.body)
 
     @_bind()
