@@ -1,3 +1,4 @@
+delay = (ms, func) -> setTimeout func, ms
 class Auth
   constructor: (@$el, @popup)->
     @$signin_btn = @$el.find('.signin')
@@ -33,6 +34,7 @@ class Popup
       #loading1.remove()
 
   bind_buttons: ->
+    that = this
     jQuery('.actions .fullpage').click ->
       chrome.tabs.getSelected (tab) =>
         # 直接在其他位置处理了
@@ -41,10 +43,10 @@ class Popup
       #takeScreenshot()
 
     jQuery('.actions .viewport').click ->
-      chrome.tabs.captureVisibleTab null, format: "png", (data_url) ->
-        window.upload_url = data_url
-        chrome.storage.local.set {'src': data_url}, ->
-          window.open(window.extension_base_url + "edit.html", "_blank")
+      chrome.tabs.getSelected (tab) =>
+        chrome.tabs.sendMessage tab.id, {task: 'before'}, @null_callback
+        delay 200, -> 
+          that.capture_viewport()
 
     jQuery('.actions .selection').click ->
       chrome.tabs.getSelected (tab) =>
@@ -52,12 +54,29 @@ class Popup
         chrome.tabs.sendMessage tab.id, {task: 'selection'}, @selection_callback
         window.close()
 
+  capture_viewport: (pageSize) ->
+    #console.log 'capture_viewport'
+    that = this
+
+    chrome.tabs.captureVisibleTab null, format: "png", (data_url) ->
+      that.send_after()
+      window.upload_url = data_url
+      chrome.storage.local.set {'src': data_url}, ->
+        window.open(window.extension_base_url + "edit.html", "_blank")
+
+  send_after: () ->
+    chrome.tabs.getSelected (tab) =>
+      chrome.tabs.sendMessage tab.id, {task: 'after'}, @null_callback
+
   fullpage_callback: (pageSize) ->
-    console.log 'fullpage_callback'
+    #console.log 'fullpage_callback'
 
   selection_callback: (pageSize) ->
     # 选取截图，不在这个回调中处理
     #console.log 'selection_callback'
+    
+  null_callback: (pageSize) ->
+    #console.log 'null_callback'
 
   show_actions: ->
     @bind_buttons()

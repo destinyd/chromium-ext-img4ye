@@ -153,6 +153,10 @@ chrome.extension.onMessage.addListener (message, sender, resCallback) ->
     window.fullpage.exec()
   else if message.task == "capture"
     chrome.tabs.captureVisibleTab null, {format: "png"}, respond
+  else if message.task == "before"
+    new Capture().before()
+  else if message.task == "after"
+    new Capture().after()
   else
 
 
